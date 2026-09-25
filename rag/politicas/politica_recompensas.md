@@ -21,7 +21,7 @@ de forma trazable y respetando el marco de juego responsable.
 - Un cliente recibe **como máximo una** recompensa por campaña.
 - Los clientes clasificados como **riesgo alto** NO son elegibles para ninguna
   recompensa y se derivan al protocolo de juego responsable.
-- Los clientes de **riesgo medio** solo pueden recibir recompensa baja o media.
+- Los clientes de **riesgo medio** solo pueden recibir recompensa baja.
 
 ## 4. Criterio de priorización
 

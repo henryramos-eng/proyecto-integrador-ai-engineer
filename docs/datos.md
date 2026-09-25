@@ -55,6 +55,20 @@ No hay etiquetas reales de "respondió a la campaña" ni de "juego problemático
 - **Producción:** histórico de campañas con grupo de control (respuesta / uplift)
   y marcas del área de juego responsable (riesgo).
 
+### Histórico semi-sintético para V2 NBO
+
+Como la fuente no contiene campañas observadas, V2 genera
+`data/processed/historico_campanas_simulado.parquet` de forma determinística
+(semilla 42). Conserva los 888 perfiles y sus valores reales dentro de la muestra;
+solo simula exposición, tipo de recompensa y respuesta en ocho campañas. Incluye
+grupo `control`, fecha de oferta/respuesta, costo, valor previo/posterior y valor
+incremental. Riesgo alto queda excluido y riesgo medio solo recibe `control` o
+recompensa `baja`.
+
+Este conjunto es **semi-sintético y no constituye evidencia histórica de campañas**.
+Sirve únicamente para validar el flujo `P(respuesta | cliente, recompensa)` hasta
+que exista un registro real con exposición, resultado y ventana de atribución.
+
 ## Limitaciones de la muestra simulada
 
 - Distribución uniforme en el tiempo: todos los clientes juegan casi todos los días

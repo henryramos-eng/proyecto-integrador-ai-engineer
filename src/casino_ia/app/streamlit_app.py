@@ -7,13 +7,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
-import pandas as pd
 import streamlit as st
 
 from casino_ia import config
 from casino_ia.data import cargar_features_cliente
 from casino_ia.genai import AsistentePoliticas, explicar_cliente
-from casino_ia.models import ModeloRespuesta, ModeloRiesgo
+from casino_ia.models import ModeloRespuesta, ModeloRespuestaNBO, ModeloRiesgo
 from casino_ia.optimization.allocate import asignar_recompensas
 
 st.set_page_config(page_title="Palacio Real · Recompensas", layout="wide")
@@ -29,14 +28,16 @@ def _modelos():
     return (
         ModeloRiesgo.load(config.MODELS_STORE / "modelo_riesgo.joblib"),
         ModeloRespuesta.load(config.MODELS_STORE / "modelo_respuesta.joblib"),
+        ModeloRespuestaNBO.load(config.MODELS_STORE / "modelo_respuesta_nbo.joblib"),
     )
 
 
 feats = _data()
-riesgo, respuesta = _modelos()
+riesgo, respuesta, respuesta_nbo = _modelos()
 pred = (
     riesgo.predict(feats)[["IdCliente", "NivelRiesgo", "RiesgoScore"]]
     .merge(respuesta.predict_proba(feats), on="IdCliente")
+    .merge(respuesta_nbo.predict_wide(feats), on="IdCliente", validate="one_to_one")
     .merge(feats, on="IdCliente")
 )
 
@@ -44,37 +45,89 @@ st.title("Casino Palacio Real — asignación de recompensas")
 tab_cartera, tab_cliente, tab_chat = st.tabs(["Cartera", "Cliente", "Asistente"])
 
 with tab_cartera:
-    presupuesto = st.slider("Presupuesto de la campaña (S/)", 200, 40000, int(config.REWARDS.presupuesto), 200)
+    presupuesto = st.slider(
+        "Presupuesto de la campaña (S/)",
+        200,
+        40000,
+        int(config.REWARDS.presupuesto),
+        200,
+    )
     cand = asignar_recompensas(pred, presupuesto=presupuesto)
     if len(cand) and "Asignada" not in cand.columns:  # módulo desactualizado en la sesión
-        st.error("Reinicia la app (Ctrl+C y volver a lanzar): hay una versión vieja del optimizador en memoria.")
+        st.error(
+            "Reinicia la app (Ctrl+C y volver a lanzar): "
+            "hay una versión vieja del optimizador en memoria."
+        )
         st.stop()
     asignadas = cand[cand["Asignada"]] if len(cand) else cand
+    candidatas = cand[cand["RecompensaSugerida"].notna()] if len(cand) else cand
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Clientes en cartera", len(pred))
     c2.metric("Riesgo alto (excluidos)", int((pred["NivelRiesgo"] == "Alto").sum()))
-    c3.metric("Recompensas asignadas", f"{len(asignadas)} / {len(cand)}")
-    c4.metric("Gasto / presupuesto", f"{asignadas['Costo'].sum():,.0f} / {presupuesto:,.0f}" if len(asignadas) else "0")
+    c3.metric("Recompensas asignadas", f"{len(asignadas)} / {len(candidatas)}")
+    gasto = asignadas["Costo"].sum() if len(asignadas) else 0
+    c4.metric("Gasto / presupuesto", f"{gasto:,.0f} / {presupuesto:,.0f}")
 
     st.caption(
-        "El optimizador rankea a los clientes elegibles por **eficiencia** (valor esperado por sol) "
-        "y asigna de arriba hacia abajo hasta agotar el presupuesto. "
-        "La columna **Asignada** marca cuáles entraron; el resto son candidatos que quedaron fuera por presupuesto."
+        "El optimizador rankea a los clientes elegibles por **eficiencia** "
+        "(valor esperado por sol) "
+        "y evalúa toda la lista aplicando presupuesto, topes y guardrails. "
+        "**MotivoDecision** explica el resultado de cada cliente."
     )
     st.bar_chart(pred["NivelRiesgo"].value_counts())
     if len(cand):
-        cols = [c for c in ["IdCliente", "Segmento", "NivelRiesgo", "ProbRespuesta",
-                            "Recompensa", "Costo", "ValorEsperado", "Eficiencia",
-                            "GastoAcumulado", "Asignada"] if c in cand.columns]
-        st.dataframe(cand[cols], use_container_width=True, hide_index=True)
+        cols = [
+            c
+            for c in [
+                "IdCliente",
+                "Segmento",
+                "NivelRiesgo",
+                "SesionesUltimos90d",
+                "ProbRespuesta",
+                "Recompensa",
+                "Costo",
+                "ValorIncremental",
+                "ValorEsperado",
+                "Eficiencia",
+                "GastoAcumulado",
+                "Asignada",
+                "MotivoDecision",
+            ]
+            if c in cand.columns
+        ]
+        st.dataframe(cand[cols], width="stretch", hide_index=True)
     else:
         st.info("Ningún cliente tiene valor esperado positivo con estos parámetros.")
 
 with tab_cliente:
-    cid = st.selectbox("Cliente", pred["IdCliente"].tolist())
-    ficha = pred[pred["IdCliente"] == cid].iloc[0].to_dict()
-    st.json({k: ficha[k] for k in ("NivelRiesgo", "RiesgoScore", "ProbRespuesta", "Segmento", "CoinInTotal")})
+    columnas_decision = [
+        "IdCliente",
+        "Recompensa",
+        "Costo",
+        "ProbRespuesta",
+        "ValorIncremental",
+        "ValorEsperado",
+        "Asignada",
+        "MotivoDecision",
+    ]
+    fichas = pred.drop(columns="ProbRespuesta").merge(
+        cand[columnas_decision], on="IdCliente", how="left"
+    )
+    cid = st.selectbox("Cliente", fichas["IdCliente"].tolist())
+    ficha = fichas[fichas["IdCliente"] == cid].iloc[0].to_dict()
+    campos = (
+        "NivelRiesgo",
+        "RiesgoScore",
+        "ProbRespuesta",
+        "Segmento",
+        "CoinInTotal",
+        "Recompensa",
+        "Costo",
+        "Asignada",
+        "MotivoDecision",
+    )
+    st.json({k: ficha.get(k) for k in campos})
     textos = explicar_cliente(ficha)
     st.write("**Explicación**", textos["explicacion"])
     st.write("**Oferta**", textos["oferta"])

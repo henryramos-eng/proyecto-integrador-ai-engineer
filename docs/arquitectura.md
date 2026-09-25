@@ -84,13 +84,15 @@ Grupos de variables (detalle en [`docs/datos.md`](datos.md)):
 
 ### 2.4 Modelo de probabilidad de respuesta — `models/response.py`
 
-- **Qué produce:** probabilidad calibrada `P(respuesta)` ∈ [0, 1] + decil.
+- **V1 (baseline):** probabilidad calibrada `P(respuesta | cliente)` + decil.
+- **V2 (NBO):** `P(respuesta | cliente, recompensa)` y valor incremental para
+  `baja`, `media` y `alta`.
 - **Enfoque:** clasificación binaria. Baseline `LogisticRegression`;
   modelo principal `GradientBoostingClassifier`. Calibración con
   `CalibratedClassifierCV` (isotónica). Métrica guía: PR-AUC y *lift@decil*.
-- **Etiqueta:** en el prototipo, *proxy* de respuesta derivado de la tendencia de
-  actividad; en producción, resultado real de campañas (con grupo de control ⇒
-  modelo de **uplift**).
+- **Etiqueta:** V1 usa un *proxy* de tendencia. V2 usa ocho campañas
+  semi-sintéticas determinísticas construidas sobre los perfiles observados, con
+  `control` y corte temporal 6/2; no se presentan como campañas reales.
 
 ### 2.5 Modelo de recomendación (siguiente mejor oferta) — `optimization/allocate.py`
 
@@ -100,8 +102,8 @@ el patrón de recomendación usado en marketing/CRM. Se compone de:
 
 | Pieza | Rol | Implementación |
 |---|---|---|
-| Modelo de propensión | P(el cliente responde) | `models/response.py` (Gradient Boosting calibrado) |
-| Estimación de valor | ganancia si responde | `_uplift_valor()` sobre `ValorTeoricoCasa` + tendencia |
+| Modelo de propensión | P(responde dado cliente y recompensa) | `ModeloRespuestaNBO` (Gradient Boosting calibrado) |
+| Estimación de valor | valor incremental si responde | regresor V2; `_uplift_valor()` permanece como baseline V1 |
 | Política de recomendación | elige la recompensa por cliente | ranking por valor esperado + selección greedy tipo mochila |
 
 Versión **adaptativa** (lo que exige "recomendación adaptativa" del diploma):
@@ -118,16 +120,18 @@ y el arranque en frío se resuelve con atributos de comportamiento del cliente.
 - **Función objetivo por cliente y tipo de recompensa r:**
 
   ```
-  valor_esperado(c, r) = P(respuesta | c, r) · uplift_valor(c) − costo(r)
+  valor_esperado(c, r) = P(respuesta | c, r) · valor_incremental(c, r) − costo(r)
   ```
 
-  `uplift_valor(c)` se estima desde el valor teórico de la casa (`ValorTeoricoCasa`)
-  y la tendencia reciente.
+  V2 estima ambos términos por recompensa. V1 conserva `uplift_valor(c)` como
+  baseline de comparación.
 - **Restricciones:**
   - Presupuesto total de la campaña (parámetro).
   - `NivelRiesgo == 'Alto'` ⇒ no elegible (guardrail duro).
-  - `NivelRiesgo == 'Medio'` ⇒ solo recompensas de costo bajo/medio.
-  - Topes por segmento.
+  - `NivelRiesgo == 'Medio'` ⇒ solo recompensa baja.
+  - Mínimo 3 sesiones en los últimos 90 días.
+  - Máximo 25 % del presupuesto en recompensas altas.
+  - Máximo 40 % del presupuesto por segmento.
 - **Método:** ranking por `valor_esperado / costo` y selección tipo *mochila*
   (greedy con corte por presupuesto; formulación LP exacta como extensión).
   **Baseline de comparación:** asignación por reglas de segmento actual.
@@ -144,8 +148,8 @@ y el arranque en frío se resuelve con atributos de comportamiento del cliente.
   - `oferta`: recompensa concreta sugerida y su justificación.
   - `mensaje`: comunicación personalizada (canal, asunto, cuerpo).
 - **Guardrails:** *prompt* con instrucciones estrictas + verificación posterior;
-  si `NivelRiesgo == 'Alto'` no se genera oferta, se genera una nota de derivación
-  a juego responsable.
+  usa solo la recompensa asignada por el optimizador. Si no hay asignación, no
+  genera oferta; riesgo alto se deriva a juego responsable.
 - Modelo: API de Anthropic (`claude-sonnet-5`), configurable por `.env`.
 
 ### 2.8 Chatbot RAG para el analista — `genai/rag.py`
@@ -183,7 +187,7 @@ sequenceDiagram
     ETL->>ETL: limpieza + split temporal
     ETL->>M: abt_cliente.parquet
     M->>M: entrena riesgo y respuesta
-    M->>OPT: NivelRiesgo, P(respuesta), ValorTeorico
+    M->>OPT: NivelRiesgo, P(respuesta | cliente, recompensa), valor incremental
     OPT->>OPT: maximiza valor esperado ≤ presupuesto
     OPT->>LLM: cliente + scores + recompensa
     LLM->>UI: explicación + oferta + mensaje

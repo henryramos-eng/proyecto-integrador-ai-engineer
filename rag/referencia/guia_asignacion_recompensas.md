@@ -22,9 +22,9 @@ lista asignando hasta agotar el presupuesto de la campaña.
 | Situación del cliente | Recomendación sugerida |
 |---|---|
 | Riesgo bajo, propensión alta (decil 8-10), alto valor histórico | Recompensa alta |
-| Riesgo bajo o medio, propensión media (decil 5-7) | Recompensa media |
+| Riesgo bajo, propensión media (decil 5-7) | Recompensa media |
 | Propensión baja (decil 1-4) o valor incremental chico | Recompensa baja o solo nutrición de marca |
-| Riesgo medio | Nunca recompensa alta; solo baja o media |
+| Riesgo medio | Solo recompensa baja |
 | Riesgo alto | Ninguna recompensa. Derivar a juego responsable |
 
 ## Qué NO hacer

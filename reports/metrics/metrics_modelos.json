@@ -47,12 +47,89 @@
       "PctJuegoMadrugada": 0.006
     }
   },
-  "respuesta": {
+  "respuesta_v1": {
     "tasa_positivos": 0.623,
     "roc_auc": 0.645,
     "pr_auc": 0.718,
     "brier": 0.229,
     "roc_auc_baseline_logistica": 0.531,
     "lift_top_decil": 1.22
+  },
+  "respuesta_v2_nbo": {
+    "fuente": "semi_sintetico_desde_features_cliente",
+    "campanas_entrenamiento": 6,
+    "campanas_prueba": 2,
+    "filas_entrenamiento": 4902,
+    "filas_prueba": 1634,
+    "respuesta": {
+      "tasa_positivos": 0.66,
+      "pr_auc": 0.71,
+      "brier": 0.223,
+      "lift_top_decil": 1.1,
+      "roc_auc": 0.565
+    },
+    "respuesta_por_tipo": {
+      "alta": {
+        "tasa_positivos": 0.711,
+        "pr_auc": 0.796,
+        "brier": 0.196,
+        "lift_top_decil": 1.19,
+        "roc_auc": 0.654
+      },
+      "baja": {
+        "tasa_positivos": 0.65,
+        "pr_auc": 0.652,
+        "brier": 0.23,
+        "lift_top_decil": 1.03,
+        "roc_auc": 0.498
+      },
+      "control": {
+        "tasa_positivos": 0.624,
+        "pr_auc": 0.651,
+        "brier": 0.236,
+        "lift_top_decil": 1.11,
+        "roc_auc": 0.532
+      },
+      "media": {
+        "tasa_positivos": 0.684,
+        "pr_auc": 0.733,
+        "brier": 0.214,
+        "lift_top_decil": 1.0,
+        "roc_auc": 0.584
+      }
+    },
+    "valor_incremental": {
+      "mae": 13.857,
+      "r2": 0.778
+    }
+  },
+  "simulacion_nbo": {
+    "naturaleza": "semi_sintetica; no representa campañas observadas",
+    "semilla": 42,
+    "campanas": 8,
+    "exposiciones": 6536,
+    "clientes": 817,
+    "resultado_por_tipo": {
+      "alta": {
+        "exposiciones": 1242,
+        "respuestas": 873,
+        "tasa_respuesta": 0.7029
+      },
+      "baja": {
+        "exposiciones": 2026,
+        "respuestas": 1324,
+        "tasa_respuesta": 0.6535
+      },
+      "control": {
+        "exposiciones": 2026,
+        "respuestas": 1292,
+        "tasa_respuesta": 0.6377
+      },
+      "media": {
+        "exposiciones": 1242,
+        "respuestas": 843,
+        "tasa_respuesta": 0.6787
+      }
+    }
   }
 }
