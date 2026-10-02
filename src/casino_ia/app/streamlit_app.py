@@ -12,7 +12,7 @@ import streamlit as st
 from casino_ia import config
 from casino_ia.data import cargar_features_cliente
 from casino_ia.genai import AsistentePoliticas, explicar_cliente
-from casino_ia.models import ModeloRespuesta, ModeloRespuestaNBO, ModeloRiesgo
+from casino_ia.models import ModeloRespuesta, ModeloRespuestaNBOCalibrado, ModeloRiesgo
 from casino_ia.optimization.allocate import asignar_recompensas
 
 st.set_page_config(page_title="Palacio Real · Recompensas", layout="wide")
@@ -28,7 +28,9 @@ def _modelos():
     return (
         ModeloRiesgo.load(config.MODELS_STORE / "modelo_riesgo.joblib"),
         ModeloRespuesta.load(config.MODELS_STORE / "modelo_respuesta.joblib"),
-        ModeloRespuestaNBO.load(config.MODELS_STORE / "modelo_respuesta_nbo.joblib"),
+        ModeloRespuestaNBOCalibrado.load(
+            config.MODELS_STORE / "modelo_respuesta_nbo_calibrado.joblib"
+        ),
     )
 
 

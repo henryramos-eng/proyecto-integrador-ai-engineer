@@ -1,0 +1,66 @@
+{
+  "optimizer_version": "greedy-nbo-v2.0.0",
+  "response_model_run_id": 2,
+  "risk_source": "modelo-riesgo-comportamental-casino-v1",
+  "session_window_note": "NroSesiones usa los 15 dias disponibles, contenidos en la ventana de 90 dias",
+  "guardrails": {
+    "minimum_sessions_90_days": 3,
+    "maximum_high_reward_budget_fraction": 0.25,
+    "maximum_segment_budget_fraction": 0.4,
+    "high_risk": "sin recompensa",
+    "medium_risk": "solo recompensa baja",
+    "positive_expected_value_only": true
+  },
+  "optimized_v2": {
+    "clients": 888,
+    "positive_candidates": 817,
+    "assigned_clients": 781,
+    "total_spend": 7790.0,
+    "budget_utilization": 0.519333,
+    "total_expected_value": 76824.07,
+    "high_reward_spend": 3720.0,
+    "high_reward_budget_share": 0.248,
+    "max_segment_budget_share": 0.198,
+    "assigned_by_reward": {
+      "alta": 93,
+      "baja": 625,
+      "media": 63
+    },
+    "assigned_by_risk": {
+      "Bajo": 585,
+      "Medio": 196
+    },
+    "decisions_by_reason": {
+      "Asignada": 781,
+      "Sin recompensa: riesgo alto": 71,
+      "No asignada: tope 25% en recompensas altas": 36
+    }
+  },
+  "baseline_v1": {
+    "clients": 888,
+    "positive_candidates": 189,
+    "assigned_clients": 189,
+    "total_spend": 945.0,
+    "budget_utilization": 0.063,
+    "total_expected_value": 578.34,
+    "high_reward_spend": 0.0,
+    "high_reward_budget_share": 0.0,
+    "max_segment_budget_share": 0.032667,
+    "assigned_by_reward": {
+      "baja": 189
+    },
+    "assigned_by_risk": {
+      "Bajo": 94,
+      "Medio": 95
+    },
+    "decisions_by_reason": {
+      "Sin recompensa: valor esperado no positivo": 628,
+      "Asignada": 189,
+      "Sin recompensa: riesgo alto": 71
+    }
+  },
+  "comparison": {
+    "expected_value_delta": 76245.73,
+    "expected_value_improvement": 131.835477
+  }
+}

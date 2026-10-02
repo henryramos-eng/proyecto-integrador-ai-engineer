@@ -1,0 +1,169 @@
+{
+  "model_version": "response-nbo-calibrated-v1.0.0",
+  "simulation_version": "campaign-rct-anchored-v1.0.0",
+  "feature_set_version": "casino-response-v1",
+  "data_nature": "semi_synthetic_rct_anchored",
+  "selected_model": "hist_gradient_boosting",
+  "split_rows": {
+    "train": 4992,
+    "validation": 1080,
+    "test": 1032
+  },
+  "split_clients": {
+    "train": 624,
+    "validation": 135,
+    "test": 129
+  },
+  "candidate_validation": {
+    "logistic_regression": {
+      "rows": 1080,
+      "responses": 146,
+      "response_rate": 0.135185,
+      "roc_auc": 0.532179,
+      "pr_auc": 0.15378,
+      "brier": 0.117116,
+      "log_loss": 0.396584,
+      "lift_top_decile": 1.027397
+    },
+    "hist_gradient_boosting": {
+      "rows": 1080,
+      "responses": 146,
+      "response_rate": 0.135185,
+      "roc_auc": 0.547271,
+      "pr_auc": 0.163956,
+      "brier": 0.116574,
+      "log_loss": 0.394968,
+      "lift_top_decile": 1.164384
+    }
+  },
+  "validation": {
+    "rows": 1080,
+    "responses": 146,
+    "response_rate": 0.135185,
+    "roc_auc": 0.547271,
+    "pr_auc": 0.163956,
+    "brier": 0.116574,
+    "log_loss": 0.394968,
+    "lift_top_decile": 1.164384,
+    "by_reward": {
+      "alta": {
+        "rows": 270,
+        "responses": 40,
+        "response_rate": 0.148148,
+        "roc_auc": 0.583043,
+        "pr_auc": 0.216746,
+        "brier": 0.12428,
+        "log_loss": 0.412451,
+        "lift_top_decile": 2.0,
+        "predicted_mean_rate": 0.154938
+      },
+      "baja": {
+        "rows": 270,
+        "responses": 34,
+        "response_rate": 0.125926,
+        "roc_auc": 0.535892,
+        "pr_auc": 0.137205,
+        "brier": 0.110364,
+        "log_loss": 0.379515,
+        "lift_top_decile": 1.176471,
+        "predicted_mean_rate": 0.13938
+      },
+      "control": {
+        "rows": 270,
+        "responses": 32,
+        "response_rate": 0.118519,
+        "roc_auc": 0.567752,
+        "pr_auc": 0.165078,
+        "brier": 0.103938,
+        "log_loss": 0.361788,
+        "lift_top_decile": 1.875,
+        "predicted_mean_rate": 0.12655
+      },
+      "media": {
+        "rows": 270,
+        "responses": 40,
+        "response_rate": 0.148148,
+        "roc_auc": 0.457391,
+        "pr_auc": 0.136148,
+        "brier": 0.127716,
+        "log_loss": 0.426119,
+        "lift_top_decile": 1.0,
+        "predicted_mean_rate": 0.145832
+      }
+    },
+    "value_if_response": {
+      "rows": 114,
+      "mae": 400.574828,
+      "r2": 0.381748
+    }
+  },
+  "test": {
+    "rows": 1032,
+    "responses": 168,
+    "response_rate": 0.162791,
+    "roc_auc": 0.549948,
+    "pr_auc": 0.201071,
+    "brier": 0.135944,
+    "log_loss": 0.442976,
+    "lift_top_decile": 1.535714,
+    "by_reward": {
+      "alta": {
+        "rows": 258,
+        "responses": 43,
+        "response_rate": 0.166667,
+        "roc_auc": 0.556679,
+        "pr_auc": 0.246485,
+        "brier": 0.138155,
+        "log_loss": 0.448298,
+        "lift_top_decile": 2.076923,
+        "predicted_mean_rate": 0.153149
+      },
+      "baja": {
+        "rows": 258,
+        "responses": 42,
+        "response_rate": 0.162791,
+        "roc_auc": 0.47134,
+        "pr_auc": 0.152759,
+        "brier": 0.137586,
+        "log_loss": 0.449297,
+        "lift_top_decile": 0.472527,
+        "predicted_mean_rate": 0.136002
+      },
+      "control": {
+        "rows": 258,
+        "responses": 35,
+        "response_rate": 0.135659,
+        "roc_auc": 0.528956,
+        "pr_auc": 0.158376,
+        "brier": 0.117042,
+        "log_loss": 0.395794,
+        "lift_top_decile": 1.701099,
+        "predicted_mean_rate": 0.126828
+      },
+      "media": {
+        "rows": 258,
+        "responses": 48,
+        "response_rate": 0.186047,
+        "roc_auc": 0.602381,
+        "pr_auc": 0.242355,
+        "brier": 0.150994,
+        "log_loss": 0.478513,
+        "lift_top_decile": 1.447115,
+        "predicted_mean_rate": 0.146331
+      }
+    },
+    "value_if_response": {
+      "rows": 133,
+      "mae": 434.350624,
+      "r2": 0.567207
+    }
+  },
+  "anchors": {
+    "control": 0.10616727682343002,
+    "baja": 0.1349106608792182,
+    "media": 0.151400383410483,
+    "alta": 0.18275684047496127,
+    "criteo_relative_lift": 1.270737,
+    "mapping_note": "baja/media/alta es una correspondencia semi-sintetica; no son tratamientos historicos reales"
+  }
+}

@@ -4,11 +4,13 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from casino_ia.genai.explainer import _plantilla, explicar_cliente
 from casino_ia.optimization.allocate import asignar_recompensas
+from scripts.run_allocation import validate_response_options
 
 
 def _scoring():
@@ -233,3 +235,20 @@ def test_v2_riesgo_medio_ignora_opciones_media_y_alta():
     ).iloc[0]
     assert decision["Recompensa"] == "baja"
     assert decision["ValorEsperado"] == 35.0
+
+
+def test_etapa4_rechaza_opciones_nbo_incompletas():
+    options = pd.DataFrame(
+        {
+            "ResponseModelRunId": [1, 1],
+            "IdCliente": [10, 10],
+            "RewardType": ["baja", "media"],
+            "ResponseProbability": [0.2, 0.3],
+            "ValueIncremental": [100.0, 100.0],
+            "Cost": [5.0, 15.0],
+            "ExpectedValue": [15.0, 15.0],
+        }
+    )
+
+    with pytest.raises(ValueError, match="baja, media y alta"):
+        validate_response_options(options, {10})

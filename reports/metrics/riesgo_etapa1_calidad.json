@@ -1,0 +1,152 @@
+{
+  "stage": "1_preparacion_datos_riesgo_supervisado",
+  "status": "COMPLETED",
+  "methodology": {
+    "unit": "cliente_fecha_corte",
+    "observation_days": 90,
+    "prediction_horizon_days": 30,
+    "target": "primer evento RG durante los 30 dias posteriores",
+    "split": "hash deterministico por cliente; sin clientes compartidos",
+    "excluded_from_features": [
+      "fechas y tipos de intervencion RG",
+      "RGCase global",
+      "atributos de contexto CountryName/LanguageName/Gender/AgeAtCutoff"
+    ]
+  },
+  "validation": {
+    "rows": 12307,
+    "users": 2073,
+    "positives": 935,
+    "positive_rate": 0.075973,
+    "split_rows": {
+      "train": 8606,
+      "test": 1974,
+      "validation": 1727
+    },
+    "split_users": {
+      "test": 323,
+      "train": 1465,
+      "validation": 285
+    },
+    "missing_cells": 32321
+  },
+  "sql_quality": [
+    {
+      "RunId": 1,
+      "MetricName": "accepted_rows",
+      "MetricValue": 12307.0,
+      "Status": "PASS",
+      "Detail": "Filas cliente-fecha con actividad en la ventana de observacion"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "distinct_users",
+      "MetricValue": 2073.0,
+      "Status": "PASS",
+      "Detail": "Clientes unicos aceptados"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "duplicate_abt_keys",
+      "MetricValue": 0.0,
+      "Status": "PASS",
+      "Detail": "Debe ser cero: duplicados RunId+UserID+CutoffDate"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "excluded_unreliable_onset_users",
+      "MetricValue": 932.0,
+      "Status": "WARN",
+      "Detail": "Apelaciones previas (EventTypeFirst=2), excluidas por fuga/etiqueta temporal no fiable"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "future_activity_leak_rows",
+      "MetricValue": 0.0,
+      "Status": "PASS",
+      "Detail": "Debe ser cero: actividad agregada posterior a la fecha de corte"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "positive_rows",
+      "MetricValue": 935.0,
+      "Status": "PASS",
+      "Detail": "Primer evento RG observado en los 30 dias posteriores al corte"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "raw_duplicate_business_keys",
+      "MetricValue": 12029.0,
+      "Status": "WARN",
+      "Detail": "Claves UserID+fecha+producto repetidas; se agregaron, no se eliminaron silenciosamente"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "raw_missing_monetary_rows",
+      "MetricValue": 191540.0,
+      "Status": "WARN",
+      "Detail": "Turnover/Hold faltantes por transferencia de terceros; se preservan como NULL"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "rejected_no_activity_frames",
+      "MetricValue": 25653.0,
+      "Status": "WARN",
+      "Detail": "Ventanas conservadas en tabla de rechazo; no se imputo actividad inexistente"
+    },
+    {
+      "RunId": 1,
+      "MetricName": "target_positive_rate",
+      "MetricValue": 0.07597302,
+      "Status": "PASS",
+      "Detail": "Desbalance esperado; se tratara en modelado, sin sobremuestreo en la ABT"
+    }
+  ],
+  "rejections": [
+    {
+      "ReasonCode": "NO_ACTIVITY_IN_LOOKBACK",
+      "RejectedRows": 25653,
+      "Users": 2589
+    },
+    {
+      "ReasonCode": "UNRELIABLE_EVENT_ONSET",
+      "RejectedRows": 932,
+      "Users": 932
+    }
+  ],
+  "eda": {
+    "top_absolute_correlations": {
+      "ActiveDaysLast30": 0.195537,
+      "ProductCount": 0.171125,
+      "ActivityRows": 0.16366,
+      "ActiveDays": 0.149893,
+      "LossDays": 0.128362,
+      "MonetaryObservedRows": 0.127484,
+      "StdDailyBets": 0.123226,
+      "MaxDailyBets": 0.122843,
+      "AvgBetsPerActiveDay": 0.117934,
+      "NumberOfBetsLast30": 0.117351
+    },
+    "features_with_missing": {
+      "FixedToLiveTurnoverRatio": 0.499716,
+      "TurnoverTrendRatio": 0.487527,
+      "TurnoverLast30": 0.345738,
+      "TurnoverPrevious60": 0.218087,
+      "StdDailyTurnover": 0.181198,
+      "StdDailyHold": 0.181198,
+      "BetsTrendRatio": 0.155277,
+      "ActiveDaysTrendRatio": 0.145933,
+      "StdDailyBets": 0.100837,
+      "MaxDailyTurnover": 0.077679,
+      "AvgDailyTurnover": 0.077679,
+      "TurnoverTotal": 0.077679,
+      "NetHoldTotal": 0.077679
+    }
+  },
+  "artifacts": {
+    "parquet": "D:\\PEA INFINITY DMC\\3. IA ENGINEER\\proyecto-integrador-ai-engineer\\data\\processed\\abt_riesgo_supervisado.parquet",
+    "summary": "D:\\PEA INFINITY DMC\\3. IA ENGINEER\\proyecto-integrador-ai-engineer\\reports\\metrics\\riesgo_etapa1_resumen.csv",
+    "correlations": "D:\\PEA INFINITY DMC\\3. IA ENGINEER\\proyecto-integrador-ai-engineer\\reports\\metrics\\riesgo_etapa1_correlaciones.csv",
+    "figure": "D:\\PEA INFINITY DMC\\3. IA ENGINEER\\proyecto-integrador-ai-engineer\\reports\\figures\\riesgo_etapa1_eda.png"
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "model_version": "risk-supervised-v1.0.0",
+  "feature_set_version": "risk-transferable-v1",
+  "selected_model": "hist_gradient_boosting",
+  "data_validation": {
+    "rows": 12307,
+    "users": 2073,
+    "positives": 935,
+    "positive_rate": 0.075973,
+    "split_rows": {
+      "train": 8606,
+      "test": 1974,
+      "validation": 1727
+    },
+    "split_users": {
+      "test": 323,
+      "train": 1465,
+      "validation": 285
+    },
+    "missing_cells": 32321
+  },
+  "candidate_validation": {
+    "logistic_regression": {
+      "rows": 1727,
+      "positives": 129,
+      "prevalence": 0.074696,
+      "roc_auc": 0.727882,
+      "pr_auc": 0.156343,
+      "brier": 0.066817,
+      "log_loss": 0.24671,
+      "ece_10_bins": 0.008195,
+      "lift_top_decile": 2.244164
+    },
+    "hist_gradient_boosting": {
+      "rows": 1727,
+      "positives": 129,
+      "prevalence": 0.074696,
+      "roc_auc": 0.753034,
+      "pr_auc": 0.176346,
+      "brier": 0.065207,
+      "log_loss": 0.237475,
+      "ece_10_bins": 0.004153,
+      "lift_top_decile": 2.785858
+    }
+  },
+  "thresholds_selected_on_validation": {
+    "medium": 0.0528130023,
+    "high": 0.1285276653
+  },
+  "validation": {
+    "rows": 1727,
+    "positives": 129,
+    "prevalence": 0.074696,
+    "roc_auc": 0.753034,
+    "pr_auc": 0.176346,
+    "brier": 0.065207,
+    "log_loss": 0.237475,
+    "ece_10_bins": 0.004153,
+    "lift_top_decile": 2.785858,
+    "medium_or_higher": {
+      "threshold": 0.0528130023,
+      "precision": 0.127934,
+      "recall": 0.844961,
+      "f1": 0.222222,
+      "predicted_positive": 852,
+      "confusion_matrix": [
+        [
+          855,
+          743
+        ],
+        [
+          20,
+          109
+        ]
+      ]
+    },
+    "high": {
+      "threshold": 0.1285276653,
+      "precision": 0.183616,
+      "recall": 0.503876,
+      "f1": 0.269151,
+      "predicted_positive": 354,
+      "confusion_matrix": [
+        [
+          1309,
+          289
+        ],
+        [
+          64,
+          65
+        ]
+      ]
+    },
+    "tiers": {
+      "Bajo": {
+        "rows": 875,
+        "positives": 20,
+        "observed_event_rate": 0.022857,
+        "mean_probability": 0.028769
+      },
+      "Medio": {
+        "rows": 498,
+        "positives": 44,
+        "observed_event_rate": 0.088353,
+        "mean_probability": 0.086739
+      },
+      "Alto": {
+        "rows": 354,
+        "positives": 65,
+        "observed_event_rate": 0.183616,
+        "mean_probability": 0.175482
+      }
+    }
+  },
+  "test": {
+    "rows": 1974,
+    "positives": 132,
+    "prevalence": 0.066869,
+    "roc_auc": 0.789982,
+    "pr_auc": 0.226369,
+    "brier": 0.057471,
+    "log_loss": 0.211495,
+    "ece_10_bins": 0.011536,
+    "lift_top_decile": 3.02112,
+    "medium_or_higher": {
+      "threshold": 0.0528130023,
+      "precision": 0.123584,
+      "recall": 0.909091,
+      "f1": 0.217588,
+      "predicted_positive": 971,
+      "confusion_matrix": [
+        [
+          991,
+          851
+        ],
+        [
+          12,
+          120
+        ]
+      ]
+    },
+    "high": {
+      "threshold": 0.1285276653,
+      "precision": 0.170157,
+      "recall": 0.492424,
+      "f1": 0.252918,
+      "predicted_positive": 382,
+      "confusion_matrix": [
+        [
+          1525,
+          317
+        ],
+        [
+          67,
+          65
+        ]
+      ]
+    },
+    "tiers": {
+      "Bajo": {
+        "rows": 1003,
+        "positives": 12,
+        "observed_event_rate": 0.011964,
+        "mean_probability": 0.027936
+      },
+      "Medio": {
+        "rows": 589,
+        "positives": 55,
+        "observed_event_rate": 0.093379,
+        "mean_probability": 0.08838
+      },
+      "Alto": {
+        "rows": 382,
+        "positives": 65,
+        "observed_event_rate": 0.170157,
+        "mean_probability": 0.175025
+      }
+    }
+  },
+  "permutation_importance_validation_pr_auc": {
+    "NumberOfBetsLast30": 0.0290866,
+    "ActiveDaysTrendRatio": 0.00949979,
+    "MaxDailyLoss": 0.00927192,
+    "ActiveDaysLast30": 0.0081815,
+    "StdDailyBets": 0.00588521,
+    "MaxDailyTurnover": 0.00411072,
+    "ActivityRows": 0.00361807,
+    "TurnoverLast30": 0.00304699,
+    "MissingMonetaryPct": 0.00268917,
+    "ActiveDaysPrevious60": 0.00255852,
+    "AvgDailyTurnover": 0.00180836,
+    "ActiveDays": 0.00154096,
+    "StdDailyHold": 0.0003656,
+    "MissingBetsRows": 0.0,
+    "AvgBetsPerActiveDay": -0.00025305,
+    "StdDailyTurnover": -0.00046476,
+    "MonetaryObservedRows": -0.00115477,
+    "TurnoverTrendRatio": -0.00161255,
+    "TurnoverPrevious60": -0.00168719,
+    "GrossLossTotal": -0.00187421,
+    "BetsTrendRatio": -0.00209868,
+    "NumberOfBetsPrevious60": -0.00218405,
+    "NumberOfBetsTotal": -0.00223431,
+    "GrossWinTotal": -0.00363379,
+    "MaxDailyBets": -0.00383273,
+    "TurnoverTotal": -0.00406463,
+    "LossDays": -0.00514433,
+    "NetHoldTotal": -0.00663583
+  }
+}

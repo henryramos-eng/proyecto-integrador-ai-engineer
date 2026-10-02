@@ -7,6 +7,10 @@ Ejecutar en **SQL Server 2022+** (SSMS), en orden:
 | 1 | `01_cargar_FctPlayerSession.sql` | BD `CasinoPalacioReal` + tabla `dbo.FctPlayerSession` y carga del CSV |
 | 2 | `02_crear_dimensiones_y_vista.sql` | Modelo estrella (`DimCliente`, `DimMaquina`, `DimSala`, `DimEmpresa`, `DimUbicacion`, `DimMoneda`, `DimNegocio`, `DimTipoSesion`, `DimCalendario`) + claves foráneas + vistas `vw_SesionesDetalle`, `vw_ResumenCliente`, `vw_ResumenMaquina`, `vw_ResumenDiario` |
 | 3 | `03_features_cliente_scoring.sql` | `vw_FeaturesCliente` (tabla analítica, 1 fila por cliente) y `vw_ClientesScoring` (baseline por reglas: `NivelRiesgo`, `DecilPropension`, `AccionRecomendada`) |
+| 4 | `04_preparar_abt_riesgo_supervisado.sql` | ABT temporal supervisada de riesgo y controles de calidad |
+| 5 | `05_modelo_riesgo_supervisado.sql` | Corridas, predicciones y vista vigente del modelo de riesgo |
+| 6 | `06_modelo_respuesta_nbo.sql` | Evidencia, campañas calibradas y opciones cliente-recompensa |
+| 7 | `07_optimizador_recompensas.sql` | Corridas, decisiones trazables y vistas vigentes del optimizador |
 
 ## Antes de empezar
 
